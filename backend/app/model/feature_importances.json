@@ -1,0 +1,42 @@
+[
+    {
+        "feature": "unique_beneficiaries_30d",
+        "importance": 0.15373287123513105
+    },
+    {
+        "feature": "tx_count_30d",
+        "importance": 0.12016948594034219
+    },
+    {
+        "feature": "unique_remitters_30d",
+        "importance": 0.102193024293678
+    },
+    {
+        "feature": "balance_velocity",
+        "importance": 0.07525697164983022
+    },
+    {
+        "feature": "atm_withdrawal_ratio",
+        "importance": 0.0698029415816456
+    },
+    {
+        "feature": "international_tx_ratio",
+        "importance": 0.05449346132909327
+    },
+    {
+        "feature": "cash_deposit_ratio",
+        "importance": 0.05137462376713888
+    },
+    {
+        "feature": "rapid_inout_ratio",
+        "importance": 0.046965561396820156
+    },
+    {
+        "feature": "same_day_inout_count",
+        "importance": 0.03500409622870862
+    },
+    {
+        "feature": "dormancy_before_activity_days",
+        "importance": 0.03370361282360591
+    }
+]

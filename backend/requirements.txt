@@ -13,3 +13,8 @@ networkx>=3.3,<4
 
 # Utilities
 python-dotenv>=1.0,<2
+
+# Added for Model Training & Plotting
+xgboost>=2.0,<3
+matplotlib>=3.8,<4
+shap>=0.45.0,<1

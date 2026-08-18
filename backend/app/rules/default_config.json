@@ -1,0 +1,23 @@
+{
+    "R001": {
+        "account_age_days_max": 30,
+        "tx_count_30d_min": 50,
+        "severity": "HIGH"
+    },
+    "R002": {
+        "unique_remitters_30d_min": 25,
+        "severity": "MEDIUM"
+    },
+    "R003": {
+        "rapid_inout_ratio_min": 0.6,
+        "severity": "HIGH"
+    },
+    "R004": {
+        "cash_deposit_ratio_min": 0.5,
+        "severity": "MEDIUM"
+    },
+    "R007": {
+        "unique_beneficiaries_30d_min": 20,
+        "severity": "MEDIUM"
+    }
+}
