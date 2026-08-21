@@ -5,7 +5,7 @@
         "severity": "HIGH"
     },
     "R002": {
-        "unique_remitters_30d_min": 25,
+        "unique_remitters_30d_min": 10,
         "severity": "MEDIUM"
     },
     "R003": {

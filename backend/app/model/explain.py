@@ -145,9 +145,13 @@ def get_explanation(account_id: int) -> dict:
 
     shap_sentences = []
     for feat, sv, val in top_3:
-        # Convert log-odds or margin space to an arbitrary "points" metric for plain English
-        pts = max(1, int(round(sv * 100))) 
-        shap_sentences.append(f"{feat} ({val}) increased risk by {pts} points.")
+        pts = round(sv * 100, 1)
+        if pts >= 0.5:
+            shap_sentences.append(f"{feat} ({val}) increased risk by {pts} points.")
+
+    # If every contribution is negligible, say so explicitly
+    if not shap_sentences:
+        shap_sentences = ["No significant risk factors identified."]
 
     return {
         "account_id": account_id,
