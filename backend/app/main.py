@@ -17,12 +17,14 @@ from app.scoring.mcs import (
     update_config
 )
 from app.model.explain import get_explanation
+from app.graph.builder import build_graph, compute_network_risk_signal
 
 # ---------------------------------------------------------------------------
 # In-Memory Stores
 # ---------------------------------------------------------------------------
 CACHE = {}
 ACTIONS = {}
+GRAPH = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -45,6 +47,22 @@ async def lifespan(app: FastAPI):
         }
         
     print(f"Successfully loaded and scored {len(all_scores)} accounts.")
+    
+    global GRAPH
+    print("Building synthetic transaction graph...")
+    GRAPH = build_graph(CACHE)
+    compute_network_risk_signal(GRAPH, CACHE)
+    
+    high_risk_ids = [acc_id for acc_id, data in CACHE.items() if data['risk_band'] == 'High']
+    hr_with_edges = sum(1 for acc_id in high_risk_ids if GRAPH.degree(acc_id) > 0)
+    
+    print(f"Successfully generated graph with {GRAPH.number_of_nodes()} nodes and {GRAPH.number_of_edges()} edges.")
+    print(f"Graph clusters: {hr_with_edges}/{len(high_risk_ids)} High-risk accounts have established network edges.")
+    
+    if hr_with_edges < len(high_risk_ids):
+        missing = [acc_id for acc_id in high_risk_ids if GRAPH.degree(acc_id) == 0]
+        print(f"Warning: The following High-risk accounts have no edges: {missing}")
+    
     yield
     # --- Shutdown ---
     pass
@@ -134,3 +152,44 @@ async def write_config(updates: Dict[str, Any]):
     """Applies partial updates to rule configurations."""
     update_config(updates)
     return {"recompute_needed": True}
+
+@app.get("/accounts/{account_id}/network")
+async def get_account_network(account_id: int):
+    """Returns 1-hop graph neighborhood for the account."""
+    if account_id not in CACHE:
+        raise HTTPException(status_code=404, detail=f"Account ID {account_id} not found.")
+        
+    # If the node has no edges, return empty lists but include the node itself
+    if GRAPH is None or account_id not in GRAPH or len(list(GRAPH.neighbors(account_id))) == 0:
+        return {
+            "nodes": [{"account_id": account_id, "risk_band": CACHE[account_id]["risk_band"], "mcs_score": CACHE[account_id]["mcs_score"]}],
+            "edges": []
+        }
+        
+    # Get 1-hop neighbors
+    neighborhood_nodes = {account_id}
+    for neighbor in GRAPH.neighbors(account_id):
+        neighborhood_nodes.add(neighbor)
+        
+    # Build response
+    nodes_res = []
+    for n in neighborhood_nodes:
+        nodes_res.append({
+            "account_id": n,
+            "risk_band": CACHE[n]["risk_band"],
+            "mcs_score": CACHE[n]["mcs_score"]
+        })
+        
+    edges_res = []
+    subgraph = GRAPH.subgraph(neighborhood_nodes)
+    for u, v, d in subgraph.edges(data=True):
+        edges_res.append({
+            "source": u,
+            "target": v,
+            "weight": d.get("weight", 1.0)
+        })
+        
+    return {
+        "nodes": nodes_res,
+        "edges": edges_res
+    }

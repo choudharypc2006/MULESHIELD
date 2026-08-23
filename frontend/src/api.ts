@@ -1,4 +1,4 @@
-import { AccountSummary, AccountDetail } from './types';
+import { AccountSummary, AccountDetail, NetworkGraph } from './types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -23,5 +23,11 @@ export async function submitAction(id: number, action: 'mule' | 'clear' | 'escal
     body: JSON.stringify({ action }),
   });
   if (!response.ok) throw new Error('Failed to submit action');
+  return response.json();
+}
+
+export async function fetchNetwork(id: number): Promise<NetworkGraph> {
+  const response = await fetch(`${API_BASE}/accounts/${id}/network`);
+  if (!response.ok) throw new Error('Failed to fetch network');
   return response.json();
 }

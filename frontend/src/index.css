@@ -1,13 +1,42 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ─── */
 :root {
+  /* Base palette */
+  --bg-base: #0a0f1e;
+  --bg-surface: #111827;
+  --bg-elevated: #1a2236;
+  --border-subtle: rgba(148, 163, 184, 0.08);
+  --border-default: rgba(148, 163, 184, 0.12);
+
+  /* Accent */
+  --accent-cyan: #22d3ee;
+  --accent-blue: #3b82f6;
+  --accent-gradient: linear-gradient(135deg, #22d3ee, #3b82f6);
+
+  /* Risk palette */
+  --risk-low: #34d399;
+  --risk-low-bg: rgba(52, 211, 153, 0.06);
+  --risk-low-border: rgba(52, 211, 153, 0.15);
+  --risk-low-glow: 0 0 12px rgba(52, 211, 153, 0.15);
+
+  --risk-med: #fbbf24;
+  --risk-med-bg: rgba(251, 191, 36, 0.06);
+  --risk-med-border: rgba(251, 191, 36, 0.15);
+  --risk-med-glow: 0 0 12px rgba(251, 191, 36, 0.15);
+
+  --risk-high: #f87171;
+  --risk-high-bg: rgba(248, 113, 113, 0.06);
+  --risk-high-border: rgba(248, 113, 113, 0.15);
+  --risk-high-glow: 0 0 12px rgba(248, 113, 113, 0.15);
+
+  /* Typography */
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #0f172a;
+  background-color: var(--bg-base);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,4 +47,103 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background: var(--bg-base);
+}
+
+/* ─── Glassmorphism Panels ─── */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-card {
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-1px);
+}
+
+/* ─── Risk Glow Badges ─── */
+.badge-low {
+  color: var(--risk-low);
+  background: var(--risk-low-bg);
+  border: 1px solid var(--risk-low-border);
+  box-shadow: var(--risk-low-glow);
+}
+
+.badge-med {
+  color: var(--risk-med);
+  background: var(--risk-med-bg);
+  border: 1px solid var(--risk-med-border);
+  box-shadow: var(--risk-med-glow);
+}
+
+.badge-high {
+  color: var(--risk-high);
+  background: var(--risk-high-bg);
+  border: 1px solid var(--risk-high-border);
+  box-shadow: var(--risk-high-glow);
+}
+
+/* ─── Pulsing glow for High-risk badge ─── */
+@keyframes high-risk-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(248, 113, 113, 0.15); }
+  50% { box-shadow: 0 0 20px rgba(248, 113, 113, 0.35), 0 0 40px rgba(248, 113, 113, 0.1); }
+}
+
+.badge-high-pulse {
+  animation: high-risk-pulse 2s ease-in-out infinite;
+}
+
+/* ─── Account list item hover accents ─── */
+.account-item {
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.account-item:hover {
+  background: rgba(148, 163, 184, 0.04);
+}
+
+.account-item-low:hover,
+.account-item-low.active {
+  border-left-color: var(--risk-low);
+  background: rgba(52, 211, 153, 0.04);
+}
+
+.account-item-med:hover,
+.account-item-med.active {
+  border-left-color: var(--risk-med);
+  background: rgba(251, 191, 36, 0.04);
+}
+
+.account-item-high:hover,
+.account-item-high.active {
+  border-left-color: var(--risk-high);
+  background: rgba(248, 113, 113, 0.04);
+}
+
+/* ─── Scrollbar styling ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.25);
 }

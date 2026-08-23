@@ -23,3 +23,20 @@ export interface AccountDetail {
   top_shap_contributions: string[];
   action?: 'mule' | 'clear' | 'escalate' | null;
 }
+
+export interface GraphNode {
+  account_id: number;
+  risk_band: RiskBand;
+  mcs_score: number;
+}
+
+export interface GraphEdge {
+  source: number;
+  target: number;
+  weight: number;
+}
+
+export interface NetworkGraph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
